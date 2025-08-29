@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ilh</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      background: url('https://4kwallpapers.com/images/wallpapers/stars-galaxy-3840x2560-10307.jpg') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* glowing cursor */
+    #cursor-glow {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 80px;
+      height: 80px;
+      background: rgba(255, 255, 255, 0.25);
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      filter: blur(25px);
+      z-index: 9999;
+    }
+
+    #mainButton {
+      background: black;
+      color: white;
+      font-size: 2rem;
+      padding: 20px 40px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+
+    #mainButton:active {
+      transform: scale(1.1);
+    }
+
+    .shrinkUp {
+      transform: scale(0.6);
+      margin-top: 50px;
+      margin-bottom: 20px;
+    }
+
+    #constellationContainer {
+      display: none;
+      text-align: center;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    #constellationImage {
+      max-width: 400px;
+      width: 80%;
+      filter: drop-shadow(0 0 10px white);
+      transition: transform 0.3s ease;
+    }
+
+    #constellationImage:hover {
+      transform: scale(1.1);
+    }
+
+    #scrollHint {
+      color: white;
+      margin-top: 15px;
+      font-style: italic;
+    }
+
+    #constellationMeaning {
+      color: white;
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin: 600px auto 100px auto;
+      line-height: 1.6;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div id="cursor-glow"></div>
+
+  <button id="mainButton">click here =)</button>
+
+  <div id="constellationContainer">
+    <img id="constellationImage" src="" alt="Constellation">
+    <p id="scrollHint">scroll down to see meaning &lt;3</p>
+    <div id="constellationMeaning"></div>
+  </div>
+
+  <script>
+    const constellations = [
+      {
+        name: "Lyra",
+        meaning: "The constellation Lyra, small yet luminous, has long been imagined as the lyre of Orpheus, whose music was said to tame storms and soften even stone. At its center lies Vega, a star bright and steadfast, guiding travelers across centuries. So when you see Lyra, remember, you are a song woven through silence, just like Vega, steady, radiant, and eternal.",
+        image: "https://png.pngtree.com/png-vector/20220712/ourmid/pngtree-lyra-constellation-as-it-can-be-seen-by-the-naked-eye-png-image_5931923.png"
+      },
+      {
+        name: "Cygnus",
+        meaning: "Cygnus glides gracefully across the Milky Way, the swan of myth, wings outstretched as though in eternal flight toward some endless horizon. Its brightest star, Deneb, burns with a pale fire, marking one corner of the Summer Triangle. So when you watch Cygnus, remember, you are flight and freedom itself, just like Deneb, soaring, luminous, and unbound.",
+        image: "https://png.pngtree.com/png-vector/20220712/ourlarge/pngtree-cygnus-constellation-as-it-can-be-seen-by-the-naked-eye-png-image_5931901.png"
+      },
+      {
+        name: "Orion",
+        meaning: "Orion strides boldly across the winter sky, the great hunter of legend, with his belt of three stars shining like a road through the heavens. For millennia, sailors and dreamers alike have followed his path, seeing courage in his stance. So when you look to Orion, remember, you are strength against the dark, just like his stars, unyielding, clear, and timeless.",
+        image: "https://png.pngtree.com/png-vector/20220712/ourmid/pngtree-orion-constellation-as-it-can-be-seen-by-the-naked-eye-png-image_5931932.png"
+      },
+      {
+        name: "Andromeda",
+        meaning: "Andromeda lies chained in the stars, a princess rescued from despair and lifted into the heavens, where her beauty stretches farther than the eye can trace. Beside her, the Andromeda Galaxy glimmers faintly, carrying stories across the void. So when you glimpse Andromeda, remember, you are infinite in possibility, just like her, vast, radiant, and unforgettable.",
+        image: "https://png.pngtree.com/png-vector/20220712/ourmid/pngtree-andromeda-constellation-as-it-can-be-seen-by-the-naked-eye-png-image_5931871.png"
+      },
+      {
+        name: "Aquila",
+        meaning: "Aquila soars high in the summer sky, the eagle of Zeus, carrying the thunderbolts of the gods on wings stretched wide across eternity. Its brightest star, Altair, burns close and clear, a jewel in the Summer Triangle. So when you find Aquila, remember, you are strength in motion, just like Altair, fierce, brilliant, and unafraid to fly.",
+        image: "https://png.pngtree.com/png-vector/20220712/ourlarge/pngtree-aquila-constellation-as-it-can-be-seen-by-the-naked-eye-png-image_5931875.png"
+      },
+      {
+        name: "Cassiopeia",
+        meaning: "Cassiopeia sits upon her celestial throne, her W-shaped crown carved into the northern sky, a queen whose beauty once defied even the gods. Her stars glitter like jewels that never fade. So when you see Cassiopeia, remember, you are a light that cannot be hidden, just like her, proud, brilliant, and everlasting.",
+        image: "https://png.pngtree.com/png-vector/20220712/ourmid/pngtree-cassiopeia-constellation-as-it-can-be-seen-by-the-naked-eye-png-image_5931888.png"
+      }
+    ];
+
+    const button = document.getElementById("mainButton");
+    const container = document.getElementById("constellationContainer");
+    const image = document.getElementById("constellationImage");
+    const meaning = document.getElementById("constellationMeaning");
+
+    let lastIndex = -1; // track last constellation
+
+    button.addEventListener("click", () => {
+      let index;
+      do {
+        index = Math.floor(Math.random() * constellations.length);
+      } while (index === lastIndex); // ensure different constellation
+      lastIndex = index;
+
+      const random = constellations[index];
+      image.src = random.image;
+      meaning.textContent = random.meaning;
+      container.style.display = "block";
+
+      // force re-animate button each click
+      button.classList.remove("shrinkUp");
+      void button.offsetWidth; // reflow trick
+      button.classList.add("shrinkUp");
+    });
+
+    // glowing cursor follow
+    const glow = document.getElementById("cursor-glow");
+    document.addEventListener("mousemove", (e) => {
+      glow.style.top = e.clientY + "px";
+      glow.style.left = e.clientX + "px";
+    });
+  </script>
+</body>
+</html>
